@@ -1,0 +1,8 @@
+T = readtable("Magnetometer Magnitude to Distance 1 Dimension - 8_23_24 9_54 PM Data Raw.csv");
+x = T.Var1;
+y = T.Var2;
+
+xInv3rdRoot = 1./(x.^3);
+% Make the best fit line for a inverse cube law fitting line to Magnitudes
+% and Distances
+coeffs = polyfit(xInv3rdRoot,y,3)

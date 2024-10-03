@@ -1,0 +1,18 @@
+Data Best Fit Line:
+ y = 18373278671.5995 * 1/x^3 + -216.6192
+
+Dipole Model Adjusted Scaling Best Fit Line no DC adj:
+Fitted equation: y = 18373278671.6612 * 1/x^3 + 0.1869
+
+
+
+
+
+Dipole Node Walkthrough:
+Initial point is when device is facing perfectly in the Y direction. With this initial magnitude and direction we can determine where on the positive Y axis the device is.
+
+We can use the generated DipoleModel meshgrid and vectors (quiver) as our node map and then with the magnitude and direction from the incoming data we can check the neighbors around the initial point to determine which one it fits best (by magnitude or direction?). 
+
+Let's start by trying a vector subtraction on an example.
+
+Inputs = Bx and By in magnetometer(simulated) readings 
