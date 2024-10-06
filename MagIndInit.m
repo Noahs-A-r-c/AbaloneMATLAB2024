@@ -14,7 +14,7 @@ function [indexXInit,indexYInit] = MagIndInit(BxByCat,initialBx, initialBy)
     
     % Find the minimum
     minDifference = min(min(differencesMagnitudes));
-    [indexYInit, indexXInit] = find(differencesMagnitudes == minDifference);
+    [indexYInit, indexXInit] = find(differencesMagnitudes == minDifference,1);
     fprintf("the initial coordinate is: [%d,%d]\n",indexXInit,indexYInit) 
     %BxByCat(minRowIndexY,minColIndexX,:);
 end

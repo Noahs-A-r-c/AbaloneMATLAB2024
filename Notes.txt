@@ -16,3 +16,15 @@ We can use the generated DipoleModel meshgrid and vectors (quiver) as our node m
 Let's start by trying a vector subtraction on an example.
 
 Inputs = Bx and By in magnetometer(simulated) readings 
+
+Alyssa Fredrick Meeting 10/4/24
+WARC
+Microbiome preference
+Red Abalone Testing a dummy device on a juvenile (Laura Rodgers-Bennet)
+Spawning Z axis movement
+historical data on spawning is useful
+abalone run from sunflower sea starts, useful for collecting
+
+Outplanting - animals will scrape off the devices
+NOAA Southwest Fishery in La Jolla 
+The Bay Foundation of the SoCal Marine Institute

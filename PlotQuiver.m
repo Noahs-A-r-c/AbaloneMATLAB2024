@@ -15,7 +15,7 @@ max_magnitude = max(magnitude(:));  % Get the maximum magnitude
 norm_mag = magnitude / max_magnitude;  % Normalize magnitudes
 
 % Scale down the normalized vectors for better visualization
-scale_factor = 0.1;  % Adjust this value as needed
+scale_factor = 0.01;  % Adjust this value as needed
 Bx_scaled = Bx_normalized * scale_factor;
 By_scaled = By_normalized * scale_factor;
 

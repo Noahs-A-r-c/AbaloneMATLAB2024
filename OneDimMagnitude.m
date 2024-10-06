@@ -41,4 +41,4 @@ fprintf('Fitted equation: y = %.4f * 1/x^3 + %.4f\n', coeffs(1), coeffs(2));
 % Find and Print the minimum vertex of the magnitude and it's distance
 % This is the value at which the Earth's magnetic field takes over
 % and our measurement is no longer useful
-maxUsefulDist = x(find(y==min(y)))
+maxUsefulDist = xOrig(find(yOrig==min(yOrig)))

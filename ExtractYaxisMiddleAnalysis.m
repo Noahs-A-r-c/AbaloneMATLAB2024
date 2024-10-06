@@ -3,12 +3,12 @@ close all;
 
 middleIndex = ceil(length(X)/2);
 
-Xmid = X(middleIndex:end,middleIndex);
+%Xmid = X(middleIndex:end,middleIndex);
 Ymid = Y(middleIndex:end,middleIndex);
 Bxmid = Bx(middleIndex:end,middleIndex);
 Bymid = By(middleIndex:end,middleIndex);
 
-midMagnitude = sqrt(Bxmid.^2 + Bymid.^2);
+midMagnitude = sqrt(Bxmid.^2 + Bymid.^2)
 
 hold on;
 scatterPlot = scatter(Ymid(2:end,:), midMagnitude(2:end,:), "DisplayName", "Dipole Magnitude");

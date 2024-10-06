@@ -4,20 +4,19 @@
 % matches closest to the next Bx and By magnitude, even if that is the same
 % coordinate that it started at
 
-function [indexXNext, indexYNext] = MagIndNext(BxByCat,indexXFirst,indexYFirst)
-
+function [indexXNext, indexYNext] = MagIndNext(BxByCat,indexXFirst,indexYFirst,secondBx,secondBy)
+format shortE;
 % Now we need to index the 8 surrounding cells to find which is closest to
 % a second coordinate from a first coordinate
 firstBx = BxByCat(indexYFirst,indexXFirst,1);
 firstBy = BxByCat(indexYFirst,indexXFirst,2);
 firstBxByCat = cat(3,firstBx,firstBy);
 
-secondBx = -2.3794e+11;
-secondBy = -3.1775e+10;
 secondBxByCat = cat(3,secondBx,secondBy);
 
 % create an array of each of the surrounding indeces for comparison
 surroundingArray = zeros(3,3,2);
+surroundingArray(surroundingArray == 0) = Inf;
 for i = 1:9
     switch i
         case 1 
@@ -26,7 +25,7 @@ for i = 1:9
             try
                 surroundingArray(1,1,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
 
         case 2 
@@ -35,7 +34,7 @@ for i = 1:9
             try
                 surroundingArray(1,2,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
 
         case 3
@@ -44,7 +43,7 @@ for i = 1:9
             try
                 surroundingArray(1,3,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
 
         case 4
@@ -53,7 +52,7 @@ for i = 1:9
             try 
                 surroundingArray(2,1,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
 
         case 5
@@ -65,7 +64,7 @@ for i = 1:9
             try
                 surroundingArray(2,3,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
 
         case 7 
@@ -74,7 +73,7 @@ for i = 1:9
             try
                 surroundingArray(3,1,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
 
         case 8 
@@ -83,7 +82,7 @@ for i = 1:9
             try
                 surroundingArray(3,2,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
 
         case 9
@@ -92,7 +91,7 @@ for i = 1:9
             try
                 surroundingArray(3,3,:) = BxByCat(indexYNext,indexXNext,:);
             catch
-                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
+%                fprintf("the coordinate: [%d,%d] does not exist\n",indexXNext,indexYNext) 
             end
     end
 end
@@ -105,10 +104,21 @@ surroundingArrayMag = sqrt(surroundingArray(:,:,1).^2 + surroundingArray(:,:,2).
 
 secondBxByCatMag = sqrt(secondBxByCat(:,:,1).^2 + secondBxByCat(:,:,2).^2);
 secondBxByCatMagArray = repmat(secondBxByCatMag,size(surroundingArray,1), size(surroundingArray,2));
-magDiffArray = surroundingArrayMag - secondBxByCatMagArray;
+magDiffArray = abs(surroundingArrayMag - secondBxByCatMagArray);
+
+format short g
+% Display the computed arrays
+disp('Surrounding Array Magnitudes:');
+disp(surroundingArrayMag);
+
+disp('Second BxByCat Magnitude Array:');
+disp(secondBxByCatMagArray);
+
+disp('Magnitude Difference Array:');
+disp(magDiffArray);
 
 magDiffArrayMin = min(min(magDiffArray));
-[tempInd] = find(magDiffArray == magDiffArrayMin);
+[tempInd] = find(magDiffArray == magDiffArrayMin,1);
 
 % Set index2 based on which surrounding array element (or the original) was
 % closest to the new secondBy and secondBx
@@ -118,15 +128,15 @@ for i = 1:9
                 indexYNext = indexYFirst + 1;
                 indexXNext = indexXFirst + -1;
 
-        case 2
+        case 4
                 indexYNext = indexYFirst + 1;
                 indexXNext = indexXFirst + 0;
 
-        case 3
+        case 7
                 indexYNext = indexYFirst + 1;
                 indexXNext = indexXFirst + 1;
 
-        case 4
+        case 2
                 indexYNext = indexYFirst + 0;
                 indexXNext = indexXFirst + -1;
 
@@ -134,15 +144,15 @@ for i = 1:9
                 indexYNext = indexYFirst + 0;
                 indexXNext = indexXFirst + 0;
 
-        case 6
+        case 8
                 indexYNext = indexYFirst + 0;
                 indexXNext = indexXFirst + 1;
 
-        case 7 
+        case 3 
                 indexYNext = indexYFirst + -1;
                 indexXNext = indexXFirst + -1;
 
-        case 8
+        case 6
                 indexYNext = indexYFirst + -1;
                 indexXNext = indexXFirst + 0;
 
@@ -152,7 +162,14 @@ for i = 1:9
     end
 end
 
-% print the new coord
-fprintf("the next coordinate is: [%d,%d]\n",indexXNext,indexYNext) 
+if indexXNext ~= indexXFirst || indexYNext ~= indexYFirst
+    % print the new coord and corresponding distance if it has changed
+    %fprintf("the next coordinate is: [%d,%d]\n",indexXNext,indexYNext) 
+    
+    distX = 200 - (indexXNext/length(BxByCat)) * 400;
+    distY = (indexYNext/length(BxByCat)) * 400;
+    fprintf("next coordinate: [%d,%d]   next distance: [%.2f mm,%.2f mm]\n",indexXNext,indexYNext,distX,distY)
+end
+
 end
 
