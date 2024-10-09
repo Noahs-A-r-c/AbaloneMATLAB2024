@@ -3,7 +3,7 @@
 % ouptuts the Bx and By vectors given the parameters for coordinate planes
 % X an Y in meters range and a number of samples, n
 
-function [X,Y,Bx,By] = DipoleMake(Xstart,Xend,Ystart,Yend,n,dpMoment)
+function [X,Y,BxByCat] = DipoleMake(Xstart,Xend,Ystart,Yend,n,dpMoment)
 
 % A script to create a 2D Matlab model of a magnetic dipole and display if
 % needed.
@@ -46,5 +46,10 @@ mag = sqrt(By.^2 + Bx.^2);
 maxMag = max(max(mag));
 [maxMagIndexY,maxMagIndexX] = find(mag == maxMag,1);
 fprintf("The maximum grid magnitude for a vector is: %d at [%d,%d]\n",maxMag,maxMagIndexX,maxMagIndexY)
+
+% Combine Bx and By for analysis, X on top of Y
+    BxByCat = cat(3,Bx,By);
+% Manually set the middle value to the one above it so it doesn't stay at 0
+    BxByCat(1,ceil(length(Bx)/2),:) = BxByCat(2,ceil(length(Bx)/2),:);
 
 end

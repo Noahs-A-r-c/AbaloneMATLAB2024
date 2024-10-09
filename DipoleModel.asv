@@ -1,11 +1,17 @@
-%% DipoleModel.m computation section
+%% DipoleModel.m computation section, this is the main file
 % Last modified 10/1/24 1:34 AM - Noah Nguyen UCD ECE Jlab
     clc; format short;
 
-% Set up prameters
+%% Set up prameters
     % Assuming N42 and a 3" magnet of diameter 0.5mm and thickness of 75mm
     %dpMoment = 9.98; % A*m^2 
     amplify = 1; % amplification to possibly drown out low amplitude noise. Did not work.
+    interpolFact = 70; % interpolation factor set
+    absBound = 3; % the absolute value boundary from one side for the surrounding values check.
+    surroundRange = -absBound:absBound;
+    cutoff = 3; % cuttoff at cutoff/interpolationFactor/2
+    filterOrd = 1; % the order of the applied butterorth filter
+
     dpMoment =  9.98 * 9.2050494347e15 * -1.426593504e-11 * 1.00796677702 * amplify; % A*m^2  * conversion to IMU data number to match OneDimMagnitude.m
 
     % Set up physical boundary size of grid
@@ -15,7 +21,7 @@
     Yend = 0.4;
 
     % number of samples per axis
-    n = 401;
+    n = 501;
 
 % Call the function to create the magnetic vector field
     [X,Y,Bx,By] = DipoleMake(Xstart,Xend,Ystart,Yend,n,dpMoment);
@@ -35,13 +41,20 @@
 
 %% Try the location tracking with moving the device in a straight line
 
-% Read the table from the 1 Dim data
+% % Read the table from the 1 Dim data
 T = readtable("Magnetometer Magnitude to Distance - 1 Dimension - 8_23_24 9_54 PM - 2D CSV 1D Movement for MATLAB.csv");
 %T = readtable("test straight line.csv");
+
 % Save the original scatter data for the X and Y coordinates.
-interpolFact = 100;
 BxRead = interp(T.Bx * amplify,interpolFact);
 ByRead = interp(T.By * amplify,interpolFact);
+
+
+% Apply the filter to reduce high frequency noise.
+BxRead = ApplyButterB(BxRead,interpolFact,cutoff,filterOrd);
+ByRead = ApplyButterB(ByRead,interpolFact,cutoff,filterOrd);
+
+
 
 [indexXInit, indexYInit] = MagIndInit(BxByCat,BxRead(1),ByRead(1));
 
@@ -55,10 +68,11 @@ indexLog(1,:) = [indexXInit, indexYInit];
 indexX1 = indexXInit;
 indexY1 = indexYInit;
 for i = 1:length(BxRead)-1
-    disp(i)
+    % display which iteration we are in
+    %disp(i)
     % Find and print the next coordinate decided by a surrounding magnitude
     % match
-    [indexX2,indexY2] = MagIndNext(BxByCat,indexX1,indexY1,BxRead(i+1),ByRead(i+1));
+    [indexX2,indexY2] = MagIndNext2(BxByCat,indexX1,indexY1,BxRead(i+1),ByRead(i+1),surroundRange);
 
     % save it to the next row of the index log
     indexLog(i+1,:) = [indexX2,indexY2];
@@ -68,11 +82,26 @@ for i = 1:length(BxRead)-1
     indexY1 = indexY2;
 end
 
-%figure 1;
-plot(indexLog(:,1),indexLog(:,2));
+%% Plot the path and add a legend for each run
+
+% Create a plot of the path taken by the algorithm
 hold on;
-scatter(indexLog(:,1),indexLog(:,2));
+plot(indexLog(:,1),indexLog(:,2),...
+    'DisplayName',...
+    ['Interpolation = ' num2str(interpolFact) '\n'...
+    ' Search Grid Size = ' num2str(absBound*2) 'x' num2str(absBound*2) '\n'...
+    ' Butterworth: Order = ' num2str(filterOrd) ' Cuttoff')
+    ]); % Scatter plot of positions
 axis equal;
+
+% Set x and y limits as specified
 xlim([0 n]);
 ylim([0 n]);
-%hold off;
+
+% Add labels and title
+xlabel('X-axis (Index)');
+ylabel('Y-axis (Index)');
+title('Path and Position Scatter Plot With Similar Min Randomization');
+
+% Add the legend to explain the colors/markers
+legend('show');
